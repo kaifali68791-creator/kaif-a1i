@@ -14,6 +14,59 @@
   var root = document.documentElement;
   var motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  /* ---------- 1b. 3D tilt on cards ---------- */
+  /* The card stays flat until a cursor enters it, then it leans toward the
+     cursor by a few degrees. A small translateZ(camera) at the end keeps the
+     vanishing point stable. Only applies on devices that report hover. */
+
+  function initTilt() {
+    var hoverOK = window.matchMedia("(hover: hover)").matches;
+    if (!hoverOK) return;
+
+    var tiltCards = document.querySelectorAll(
+      ".cert-item, .project-card, .skill-card, .contact-card, .about-card"
+    );
+
+    tiltCards.forEach(function (card) {
+      // Only when JS is on does this run, so the CSS transition already
+      // applies. The card starts flat (transform: none in the stylesheet).
+      if (card.dataset.tilt) return;   /* already initialised */
+      card.dataset.tilt = "1";
+
+      var maxTilt = 5;   /* degrees */
+      var backgroundColor = getComputedStyle(card).getPropertyValue("background-color");
+
+      var rafId = null;
+      card.addEventListener("mousemove", function (e) {
+        if (rafId) return;
+        rafId = requestAnimationFrame(function () {
+          rafId = null;
+          var rect = card.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var dx = e.clientX - cx;
+          var dy = e.clientY - cy;
+          var angleX = (dy / 200) * maxTilt;
+          var angleY = -(dx / 200) * maxTilt;
+          card.style.transform =
+            "perspective(800px) rotateX(" + angleX + "deg) rotateY(" + angleY + "deg) translateZ(12px)";
+        });
+      });
+
+      card.addEventListener("mouseleave", function () {
+        card.style.transform = "";
+      });
+    });
+  }
+
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(initTilt);
+  } else {
+    window.addEventListener("load", initTilt);
+  }
+
+  /* ---------- 2. Scroll reveal for every section ---------- */
+
   function reduced() { return motionQuery.matches; }
 
   function show(el) { el.classList.add("is-in"); }
@@ -99,6 +152,10 @@
     });
   });
 
+  /* Footer entrance: fade up from below, no scroll-reveal (it's already in view). */
+  var footerEl = document.querySelector(".site-footer");
+  if (footerEl) revealTargets.push(footerEl);
+
   /* ---------- 3. Play the animations ---------- */
   if (reduced() || !("IntersectionObserver" in window)) {
     /* Reduced motion (or an old browser): show everything immediately. */
@@ -158,8 +215,8 @@
   var scheduled = false;
 
   function update() {
-    var y = window.pageYOffset || root.scrollTop || 0;
-    var max = root.scrollHeight - window.innerHeight;
+    var y = window.scrollY || window.pageYOffset || 0;
+    var max = (document.documentElement.scrollHeight || document.body.scrollHeight) - window.innerHeight;
 
     if (bar) {
       var ratio = max > 0 ? Math.min(Math.max(y / max, 0), 1) : 0;
@@ -180,6 +237,11 @@
     window.requestAnimationFrame(update);
   }
 
+  /* Pause decorative animations when tab hidden */
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) document.body.classList.add("paused");
+    else document.body.classList.remove("paused");
+  });
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onScroll, { passive: true });
   update();

@@ -107,4 +107,36 @@
       });
     });
   }
+  /* ---------- 6. Certificate lightbox ---------- */
+  var lb = document.getElementById("lightbox");
+  var lbImg = document.getElementById("lightboxImg");
+  var lbClose = document.getElementById("lightboxClose");
+  if (lb && lbImg) {
+    document.querySelectorAll(".cert-item img").forEach(function (img) {
+      img.addEventListener("click", function () {
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lb.classList.add("open");
+        lb.setAttribute("aria-hidden", "false");
+      });
+    });
+    function closeLb() {
+      lb.classList.remove("open");
+      lb.setAttribute("aria-hidden", "true");
+    }
+    if (lbClose) lbClose.addEventListener("click", closeLb);
+    lb.addEventListener("click", function (e) { if (e.target === lb) closeLb(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeLb(); });
+  }
+  /* ---------- 7. Custom SVG arrow cursor ---------- */
+  var cc = document.getElementById("customCursor");
+  var isTouch = window.matchMedia("(pointer: coarse)").matches;
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (cc && !isTouch && !reduced && window.matchMedia("(pointer: fine)").matches) {
+    cc.style.display = "block";
+    document.addEventListener("mousemove", function (e) {
+      cc.style.left = e.clientX + "px";
+      cc.style.top = e.clientY + "px";
+    });
+  }
 })();

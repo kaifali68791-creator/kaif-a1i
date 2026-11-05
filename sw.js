@@ -15,7 +15,7 @@
 
 /* Bump this whenever you ship an update. The activate step deletes every
    cache that does not match, so users never get a stale mix of versions. */
-var CACHE_VERSION = "v2";
+var CACHE_VERSION = "v3";
 var CACHE_NAME = "kaif-portfolio-" + CACHE_VERSION;
 
 /* The small files needed to render the page with no connection. */
@@ -23,12 +23,14 @@ var APP_SHELL = [
   "./",
   "./index.html",
   "./css/style.css",
+  "./css/premium.css",
   "./js/main.js",
   "./js/animations.js",
   "./manifest.json",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
-  "./assets/icons/maskable-512.png"
+  "./assets/icons/maskable-512.png",
+  "./assets/cursor.png"
 ];
 
 /* ---------- Install: precache the shell ---------- */
