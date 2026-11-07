@@ -21,19 +21,18 @@ body {
 }
 
 /* Animated background orbs */
-body::before, body::after {
+body::before {
   content: "";
   position: fixed;
-  width: 420px; height: 420px;
+  width: 320px; height: 320px;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.18;
+  filter: blur(70px);
+  opacity: 0.16;
   z-index: -1;
   pointer-events: none;
-  animation: floatOrb 18s ease-in-out infinite;
+  animation: floatOrb 20s ease-in-out infinite;
 }
-body::before { background: #e6394e; top: -120px; right: -120px; }
-body::after { background: #ff6b7a; bottom: -160px; left: -160px; animation-delay: -9s; }
+body::after { display: none; }
 @keyframes floatOrb {
   0%,100% { transform: translate(0,0) scale(1); }
   50% { transform: translate(40px,-30px) scale(1.15); }
