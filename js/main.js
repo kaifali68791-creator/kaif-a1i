@@ -139,4 +139,29 @@
       cc.style.top = e.clientY + "px";
     });
   }
+  /* ---------- 9. Fullscreen toggle ---------- */
+  var fsBtn = document.getElementById("fsToggle");
+  if (fsBtn) {
+    function updateFsIcon() {
+      var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      fsBtn.setAttribute("aria-label", isFs ? "Exit fullscreen" : "Enter fullscreen");
+      fsBtn.title = isFs ? "Exit fullscreen" : "Fullscreen";
+      fsBtn.innerHTML = isFs
+        ? '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+    }
+    fsBtn.addEventListener("click", function () {
+      var el = document.documentElement;
+      if (!(document.fullscreenElement || document.webkitFullscreenElement)) {
+        if (el.requestFullscreen) el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    });
+    document.addEventListener("fullscreenchange", updateFsIcon);
+    document.addEventListener("webkitfullscreenchange", updateFsIcon);
+    updateFsIcon();
+  }
 })();

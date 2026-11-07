@@ -190,3 +190,6 @@ body.paused *, body.paused *::before, body.paused *::after { animation-play-stat
   html { cursor: none !important; }
   input, textarea, select { cursor: text !important; }
 }
+
+.fs-toggle { background: none; border: 1px solid rgba(255,255,255,0.15); color: #f5f5f7; border-radius: 8px; padding: 6px 8px; cursor: pointer; display: inline-flex; align-items: center; }
+.fs-toggle:hover { border-color: #e6394e; color: #ff6b7a; }
